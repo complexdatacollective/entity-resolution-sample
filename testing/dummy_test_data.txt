@@ -1,0 +1,4 @@
+id,type,name
+1,4aebf73e-95e3-4fd1-95e7-237dcc4a4466,foo
+2,4aebf73e-95e3-4fd1-95e7-237dcc4a4466,bar
+3,4aebf73e-95e3-4fd1-95e7-237dcc4a4466,bazz

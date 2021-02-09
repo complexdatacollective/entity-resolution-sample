@@ -11,8 +11,8 @@ name_field = '6be95f85-c2d9-4daf-9de1-3939418af888'
 surname_field = '0ff25001-a2b8-46de-82a9-53143aa00d10'
 person_entity_type = '4aebf73e-95e3-4fd1-95e7-237dcc4a4466'
 
-parser = argparse.ArgumentParser("Entity resolver")
-parser.add_argument('--minimumThreshold', type=float, required=False, default=0.5, help='Ignore matches lower than this threshold')
+parser = argparse.ArgumentParser("Entity resolver resolver")
+parser.add_argument('-t', '--minimumThreshold', type=float, default=0.000, help='Ignore matches lower than this threshold')
 args = parser.parse_args()
 
 # script_path = os.path.dirname(__file__)
@@ -64,7 +64,7 @@ foo = pairwise[['prob']].to_csv(index=True)
 
 # spoof slow streamed response
 for index, line in enumerate(foo.splitlines()):
-    time.sleep(0.05)
+    # time.sleep(0.05)
     if index == 0:
         print(line, flush=True)
         continue
