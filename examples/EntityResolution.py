@@ -7,9 +7,7 @@ import random
 import recordlinkage
 
 
-name_field = '6be95f85-c2d9-4daf-9de1-3939418af888'
-surname_field = '0ff25001-a2b8-46de-82a9-53143aa00d10'
-person_entity_type = '4aebf73e-95e3-4fd1-95e7-237dcc4a4466'
+name_field = '8f76f151-dec5-4b91-961e-59a9776949a5' # `Resolver.netcanvas` name field
 
 parser = argparse.ArgumentParser("Entity resolver resolver")
 parser.add_argument('-t', '--minimumThreshold', type=float, default=0.000, help='Ignore matches lower than this threshold')
@@ -35,9 +33,7 @@ indexer.full()
 index_list = indexer.index(person_nodes)
 comp_pairs = recordlinkage.Compare()
 comp_pairs.string(name_field, name_field, method='jarowinkler',label='fnJwDist')
-comp_pairs.string(surname_field, surname_field, method='jarowinkler',label='lnJwDist')
 comp_pairs.string(name_field, name_field, method='levenshtein',label='fnLevenDist')
-comp_pairs.string(surname_field, surname_field, method='levenshtein',label='lnLevenDist')
 pairwise = comp_pairs.compute(index_list, person_nodes)
 
 erAlgorithm = "simple"
@@ -45,13 +41,13 @@ algorithmError = "Please specify an appropriate algorithm"
 if erAlgorithm == "simple": # Use simple mean of all string distances
     pairwise["prob"] = pairwise.mean(axis=1)
 elif erAlgorithm == "logReg": # Use logistic regression
-    features = ['fnJwDist','fnLevenDist','lnJwDist','lnLevenDist']
+    features = ['fnJwDist','fnLevenDist']
     from joblib import dump, load
     from sklearn.linear_model import LogisticRegression
     logRegModel = load('pugLogRegression.joblib')
     pairwise['prob'] = logRegModel.predict_proba(pairwise[features])[:,1]
 elif erAlgorithm == "decisionTree":     # Use degression tree
-    features = ['fnJwDist','fnLevenDist','lnJwDist','lnLevenDist']
+    features = ['fnJwDist','fnLevenDist']
     from joblib import dump, load
     from sklearn.tree import DecisionTreeRegressor
     treeModel = load('pugDecisionTree.joblib')
