@@ -2,17 +2,32 @@
 
 This repository provides some sample scripts and a sample protocol for use with the Entity Resolution feature in Network Canvas Server.
 
-# How entity resolution works
+# What is entity resolution?
 
 Entity resolution allows you to find pairs of nodes (and egos) across different sessions that represent the same person, place or object.
 You can export a single network including these merged nodes, and their resolved properties. This is facilitated by sending a list
 of nodes to your script (typically python), which then returns a list of pairs with scores of the probability of matching.
 
 ### Egos
+
 Egos are "cast" (converted) into a type of node from the network during the resolution process. Attributes are matched
 according to their labels. e.g. if ego has the attribute 'name', and the person node type has the attribute 'name', when the ego is cast as a person node it will copy this value accross.
 
-# Writing an entity
+### Export
+
+Export format is slightly different to a normal session export.
+
+1) It will not contain an ego, even if the sessions include egos.
+2) It will contain "virtual" ego nodes
+   - For csv this will be an attribute table, for graphml these will be nodes of type "_ego"
+   - If the egos are resolved with nodes, they won't be added as virtual ego nodes.
+3) Each node will have 2 additional attributes:
+   - `networkCanvasOriginCaseIDs` The case id of the original network(s), that these node belonged to
+   - `networkCanvasOriginUUIDs` The original UUIDs that this node is inherited from (if not a resolved node, this will be empty).
+
+# Writing an entity resolution script
+
+Network data is sent to your resolution script and returned as pairs with a match probability score:
 
 1. A `CSV` formatted list of nodes (and attributes) are sent to your entity resolution script via `stdin`.
 2. The script can process these nodes any way you choose.
