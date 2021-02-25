@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
 import pandas as pd
 import numpy as np
-import sys, os, time
+import sys
 import argparse
 import random
 import recordlinkage
 
+"""
+# String Distance Entity Resolution
 
-name_field = '8f76f151-dec5-4b91-961e-59a9776949a5' # `Resolver.netcanvas` name field
+This example resolution script assigns a score according to word distance.
 
+It includes an example of reading data from stdin using pandas.
+"""
+
+name_field = '722f07ae-c166-405a-a47b-7b4f85e7e411' # `/examples/protocols/SimpleEntityResolutionProtocol.netcanvas` name field
+erAlgorithm = 'simple' # Algorithm to compare distances
+
+# Set up arguments using argparse library
 parser = argparse.ArgumentParser("Entity resolver resolver")
 parser.add_argument('-t', '--minimumThreshold', type=float, default=0.000, help='Ignore matches lower than this threshold')
 args = parser.parse_args()
 
-# script_path = os.path.dirname(__file__)
-# csv_path = os.path.join(script_path, "EntityResolution_attributeList.csv")
-# df  =  pd.read_csv(csv_path, delimiter=',',index_col='networkCanvasAlterID')
-
+# Read file into pandas from sdin
 df = pd.read_csv(sys.stdin, delimiter=',')
 
 # Remove duplicate ids
 df.drop_duplicates('networkCanvasAlterID', keep = False, inplace = True)
 df.set_index("networkCanvasAlterID", inplace = True)
 person_nodes = df.loc[df['networkCanvasNodeType'] == person_entity_type];
-
-# time.sleep(10)
-
 
 # Merge dataframe to itself to get pairwise comparisons
 indexer = recordlinkage.Index()
@@ -36,7 +39,6 @@ comp_pairs.string(name_field, name_field, method='jarowinkler',label='fnJwDist')
 comp_pairs.string(name_field, name_field, method='levenshtein',label='fnLevenDist')
 pairwise = comp_pairs.compute(index_list, person_nodes)
 
-erAlgorithm = "simple"
 algorithmError = "Please specify an appropriate algorithm"
 if erAlgorithm == "simple": # Use simple mean of all string distances
     pairwise["prob"] = pairwise.mean(axis=1)
@@ -55,16 +57,17 @@ elif erAlgorithm == "decisionTree":     # Use degression tree
 else:
     print(algorithmError)
 
-# Output edgelist w/ probability
-foo = pairwise[['prob']].to_csv(index=True)
+# Get results as csv format
+result = pairwise[['prob']].to_csv(index=True)
 
-# spoof slow streamed response
-for index, line in enumerate(foo.splitlines()):
-    # time.sleep(0.05)
+# Output results to stdout
+for index, line in enumerate(result.splitlines()):
+    # CSV headers
     if index == 0:
-        print(line, flush=True)
+        print(line, flush=True) # flush=True output immediately, not at end of script
         continue
 
+    # For each pair check that it matches the minimum threshold
     line_parts = line.split(",")
     prob = float(line_parts[2])
     if (prob > args.minimumThreshold):
