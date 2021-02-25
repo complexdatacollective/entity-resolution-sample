@@ -1,5 +1,4 @@
-# Entity Resolution Sample Scripts
-
+# Entity Resolution Template
 This repository provides some sample scripts and a sample protocol for use with the Entity Resolution feature in Network Canvas Server.
 
 # What is entity resolution?
