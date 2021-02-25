@@ -96,13 +96,13 @@ for line in results:
 
 ### EntityResolution.py
 
-This script finds matches by their Levenshtein, Jaro-Winkler distances,
-and is a potential real-world example.
-
-### Random.py
-
 This script assigns pairs with a random probabiltiy, it's useful for
 testing and perhaps as a starting point for your own scripts.
+
+### examples/resolvers/string_distance
+
+This script finds matches by their Levenshtein, Jaro-Winkler distances,
+and is a potential real-world example.
 
 # Limitations
 
